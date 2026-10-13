@@ -1,0 +1,2 @@
+import {DatabaseSync} from 'node:sqlite';
+export function referenceStore(){const db=new DatabaseSync(':memory:');db.exec('PRAGMA foreign_keys=ON');return {db,now:Date.now,q:(sql,...args)=>db.prepare(sql).get(...args),all:(sql,...args)=>db.prepare(sql).all(...args),run:(sql,...args)=>db.prepare(sql).run(...args),tx:fn=>{db.exec('BEGIN IMMEDIATE');try{const r=fn();db.exec('COMMIT');return r;}catch(e){db.exec('ROLLBACK');throw e;}},close:()=>db.close()};}
